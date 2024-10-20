@@ -1,0 +1,3 @@
+/Users/sergeyshorin/Documents/Универ/ООП/LAB1-MAIN/cmake-build-debug/CMakeFiles/LAB1_MAIN.dir
+/Users/sergeyshorin/Documents/Универ/ООП/LAB1-MAIN/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/sergeyshorin/Documents/Универ/ООП/LAB1-MAIN/cmake-build-debug/CMakeFiles/rebuild_cache.dir
