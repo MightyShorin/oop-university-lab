@@ -12,4 +12,13 @@ add_executable(LAB1_MAIN main.cpp
         Line.h
         AppManager.cpp
         AppManager.h
+        Point.cpp
+        ColorManager.cpp
+        ColorManager.h
+        Terminal.cpp
+        Terminal.h
+        InputHandler.cpp
+        InputHandler.h
+        CommandLineParser.cpp
+        CommandLineParser.h
 )

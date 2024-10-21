@@ -11,8 +11,8 @@
 
 class Symbol {
 public:
-    Symbol();
-    void draw(size_t x, size_t y);
+    Symbol(char symbol);
+    void draw(size_t x, size_t y) const;
 private:
     char symbol;
 };

@@ -18,8 +18,8 @@ public:
     void draw();
 
 private:
-    size_t len;
     Point current_coordinates;
+    size_t len;
     size_t len_on_screen;
     size_t terminal_height;  // Переменная для хранения высоты терминала
     bool bool_counter;

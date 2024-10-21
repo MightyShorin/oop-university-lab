@@ -73,6 +73,36 @@ build CMakeFiles/LAB1_MAIN.dir/AppManager.cpp.o: CXX_COMPILER__LAB1_MAIN_unscann
   OBJECT_DIR = CMakeFiles/LAB1_MAIN.dir
   OBJECT_FILE_DIR = CMakeFiles/LAB1_MAIN.dir
 
+build CMakeFiles/LAB1_MAIN.dir/Point.cpp.o: CXX_COMPILER__LAB1_MAIN_unscanned_Debug /Users/sergeyshorin/Documents/Универ/ООП/LAB1-MAIN/Point.cpp || cmake_object_order_depends_target_LAB1_MAIN
+  DEP_FILE = CMakeFiles/LAB1_MAIN.dir/Point.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk -fcolor-diagnostics
+  OBJECT_DIR = CMakeFiles/LAB1_MAIN.dir
+  OBJECT_FILE_DIR = CMakeFiles/LAB1_MAIN.dir
+
+build CMakeFiles/LAB1_MAIN.dir/ColorManager.cpp.o: CXX_COMPILER__LAB1_MAIN_unscanned_Debug /Users/sergeyshorin/Documents/Универ/ООП/LAB1-MAIN/ColorManager.cpp || cmake_object_order_depends_target_LAB1_MAIN
+  DEP_FILE = CMakeFiles/LAB1_MAIN.dir/ColorManager.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk -fcolor-diagnostics
+  OBJECT_DIR = CMakeFiles/LAB1_MAIN.dir
+  OBJECT_FILE_DIR = CMakeFiles/LAB1_MAIN.dir
+
+build CMakeFiles/LAB1_MAIN.dir/Terminal.cpp.o: CXX_COMPILER__LAB1_MAIN_unscanned_Debug /Users/sergeyshorin/Documents/Универ/ООП/LAB1-MAIN/Terminal.cpp || cmake_object_order_depends_target_LAB1_MAIN
+  DEP_FILE = CMakeFiles/LAB1_MAIN.dir/Terminal.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk -fcolor-diagnostics
+  OBJECT_DIR = CMakeFiles/LAB1_MAIN.dir
+  OBJECT_FILE_DIR = CMakeFiles/LAB1_MAIN.dir
+
+build CMakeFiles/LAB1_MAIN.dir/InputHandler.cpp.o: CXX_COMPILER__LAB1_MAIN_unscanned_Debug /Users/sergeyshorin/Documents/Универ/ООП/LAB1-MAIN/InputHandler.cpp || cmake_object_order_depends_target_LAB1_MAIN
+  DEP_FILE = CMakeFiles/LAB1_MAIN.dir/InputHandler.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk -fcolor-diagnostics
+  OBJECT_DIR = CMakeFiles/LAB1_MAIN.dir
+  OBJECT_FILE_DIR = CMakeFiles/LAB1_MAIN.dir
+
+build CMakeFiles/LAB1_MAIN.dir/CommandLineParser.cpp.o: CXX_COMPILER__LAB1_MAIN_unscanned_Debug /Users/sergeyshorin/Documents/Универ/ООП/LAB1-MAIN/CommandLineParser.cpp || cmake_object_order_depends_target_LAB1_MAIN
+  DEP_FILE = CMakeFiles/LAB1_MAIN.dir/CommandLineParser.cpp.o.d
+  FLAGS = -g -std=gnu++20 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk -fcolor-diagnostics
+  OBJECT_DIR = CMakeFiles/LAB1_MAIN.dir
+  OBJECT_FILE_DIR = CMakeFiles/LAB1_MAIN.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target LAB1_MAIN
@@ -81,7 +111,7 @@ build CMakeFiles/LAB1_MAIN.dir/AppManager.cpp.o: CXX_COMPILER__LAB1_MAIN_unscann
 #############################################
 # Link the executable LAB1_MAIN
 
-build LAB1_MAIN: CXX_EXECUTABLE_LINKER__LAB1_MAIN_Debug CMakeFiles/LAB1_MAIN.dir/main.cpp.o CMakeFiles/LAB1_MAIN.dir/Symbol.cpp.o CMakeFiles/LAB1_MAIN.dir/Line.cpp.o CMakeFiles/LAB1_MAIN.dir/AppManager.cpp.o
+build LAB1_MAIN: CXX_EXECUTABLE_LINKER__LAB1_MAIN_Debug CMakeFiles/LAB1_MAIN.dir/main.cpp.o CMakeFiles/LAB1_MAIN.dir/Symbol.cpp.o CMakeFiles/LAB1_MAIN.dir/Line.cpp.o CMakeFiles/LAB1_MAIN.dir/AppManager.cpp.o CMakeFiles/LAB1_MAIN.dir/Point.cpp.o CMakeFiles/LAB1_MAIN.dir/ColorManager.cpp.o CMakeFiles/LAB1_MAIN.dir/Terminal.cpp.o CMakeFiles/LAB1_MAIN.dir/InputHandler.cpp.o CMakeFiles/LAB1_MAIN.dir/CommandLineParser.cpp.o
   FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk
   OBJECT_DIR = CMakeFiles/LAB1_MAIN.dir
   POST_BUILD = :

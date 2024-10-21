@@ -8,8 +8,6 @@
 #include "Line.h"
 #include <cstdlib>
 #include <ctime>
-#include <sys/ioctl.h>  // Для получения размера терминала
-#include <unistd.h>     // Для использования STDOUT_FILENO
 
 
 class AppManager {
@@ -22,9 +20,6 @@ private:
     bool epilepsia;
     size_t line_len;
     size_t speed;
-
-    void getTerminalSize(size_t &width, size_t &height);
-
 };
 
 #endif //APPMANAGER_H
