@@ -28,14 +28,14 @@ void AppManager::run() {
         // Бесконечный цикл для создания новых змей
         Line line(line_len, term_height);
         line.setStartXY(std::rand() % term_width + 1, 1); // Установка начальной позиции линии
-        line.setColor(epilepsia);
+        line.setColorMode(epilepsia);
 
         // Переменная для отслеживания оставшихся шагов змейки
         size_t steps = term_height + line_len;
 
 
         while (steps > 0) {
-            line.draw();
+            line.move();
             std::this_thread::sleep_for(std::chrono::milliseconds(1000 / speed));
             steps--;  // Уменьшаем количество оставшихся шагов
         }

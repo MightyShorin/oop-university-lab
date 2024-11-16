@@ -21,8 +21,3 @@ void Point::setX(size_t x) {
 void Point::setY(size_t y) {
     this->y = y;
 }
-
-void Point::moveBy(int dx, int dy) {
-    x += dx;
-    y += dy;
-}

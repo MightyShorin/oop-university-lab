@@ -14,8 +14,8 @@ class Line {
 public:
     Line(size_t length, size_t terminal_height);
     void setStartXY(size_t x, size_t y);
-    void setColor(bool epilepsia_mode);
-    void draw();
+    void setColorMode(bool epilepsia_mode);
+    void move();
 
 private:
     Point current_coordinates;

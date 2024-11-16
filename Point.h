@@ -23,9 +23,6 @@ public:
     // Сеттеры
     void setX(size_t x);
     void setY(size_t y);
-
-    // Метод для перемещения точки
-    void moveBy(int dx, int dy);
 };
 
 #endif //POINT_H

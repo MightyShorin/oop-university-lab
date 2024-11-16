@@ -9,7 +9,7 @@
 
 Line::Line(size_t length, size_t terminal_height)
     : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height) {
-    current_coordinates = Point(0, 0);
+    current_coordinates = Point(0, 0); // второй конструктор для дефолта внутри point
 }
 
 void Line::setStartXY(size_t x, size_t y) {
@@ -17,7 +17,7 @@ void Line::setStartXY(size_t x, size_t y) {
     current_coordinates.setY(y);
 }
 
-void Line::setColor(bool epilepsia_mode) {
+void Line::setColorMode(bool epilepsia_mode) {
     if (epilepsia_mode) {
         ColorManager::setRandomColor();  // Устанавливаем случайный цвет для эпилепсии
     } else {
@@ -25,7 +25,7 @@ void Line::setColor(bool epilepsia_mode) {
     }
 }
 
-void Line::draw() {
+void Line::move() {
     if (current_coordinates.getY() < terminal_height) { // Проверка, если не достигли нижней границы терминала
         // Генерируем случайный символ в пределах ASCII диапазона 33-126
         char randomSymbol = static_cast<char>(std::rand() % 93 + 33);

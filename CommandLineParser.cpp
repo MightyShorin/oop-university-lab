@@ -21,7 +21,7 @@ int CommandLineParser::parse() {
 
     // если аргументов нет
     if (argc == 1) {
-        speed = 5;
+        speed = 5; // избавиться от  этого перегрузкой конструктора
         line_len = 5;
         epilepsia = true;
         return 2; // Используем значения по умолчанию
