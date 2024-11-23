@@ -9,13 +9,13 @@
 #include <thread>
 #include <chrono>
 
-AppManager::AppManager(bool epilepsia_mode, size_t line_len, size_t speed)
-    : epilepsia(epilepsia_mode), line_len(line_len), speed(speed) {
+AppManager::AppManager(bool epilepsia, size_t line_len, size_t speed, size_t frequency)
+    : epilepsia(epilepsia), line_len(line_len), speed(speed), frequency(frequency) {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));  // Инициализация генератора случайных чисел
 }
 
 void AppManager::inputParameters() {
-    InputHandler::getParameters(speed, line_len, epilepsia);
+    InputHandler::getParameters(frequency, speed, line_len, epilepsia);
 }
 
 void AppManager::run() {

@@ -12,7 +12,7 @@
 
 class AppManager {
 public:
-    AppManager(bool epilepsia, size_t line_len, size_t speed);
+    AppManager(bool epilepsia, size_t line_len, size_t speed, size_t frequency);
     void run();
     void inputParameters();  // Метод для ввода параметров
 
@@ -20,6 +20,7 @@ private:
     bool epilepsia;
     size_t line_len;
     size_t speed;
+    size_t frequency;
 };
 
 #endif //APPMANAGER_H
