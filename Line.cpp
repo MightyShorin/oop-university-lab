@@ -17,16 +17,6 @@ void Line::setStartXY(size_t x, size_t y) {
     current_coordinates.setY(y);
 }
 
-// Цвет должен устанавливаться в конструкторе Line, храниться в переменной класса
-// и передаваться методу draw() класса Symbol для отрисовки символа нужного цвета.
-
-// void Line::setColorMode(bool epilepsia_mode) {
-//     if (epilepsia_mode) {
-//         ColorManager::setRandomColor();  // Устанавливаем случайный цвет для эпилепсии
-//     } else {
-//         ColorManager::setGreenColor();  // Устанавливаем зелёный цвет
-//     }
-// }
 
 void Line::move() {
     if (current_coordinates.getY() < terminal_height) { // Проверка, если не достигли нижней границы терминала

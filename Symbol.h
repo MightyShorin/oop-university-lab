@@ -6,8 +6,6 @@
 #define SYMBOL_H
 
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
 
 class Symbol {
 public:
