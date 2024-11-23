@@ -12,9 +12,8 @@
 
 class Line {
 public:
-    Line(size_t length, size_t terminal_height);
+    Line(size_t length, size_t terminal_height, bool epilepsia);
     void setStartXY(size_t x, size_t y);
-    void setColorMode(bool epilepsia_mode);
     void move();
 
 private:
@@ -23,6 +22,7 @@ private:
     size_t len_on_screen;
     size_t terminal_height;  // Переменная для хранения высоты терминала
     bool bool_counter;
+    std::string color; // генерируется в конструкторе
 
     void clearLast();
 };

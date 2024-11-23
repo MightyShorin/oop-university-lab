@@ -7,8 +7,8 @@
 #include <thread>
 #include <chrono>
 
-Line::Line(size_t length, size_t terminal_height)
-    : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height) {
+Line::Line(size_t length, size_t terminal_height, bool epilepsia)
+    : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height), color(ColorManager::getRandomColor(epilepsia)) {
     current_coordinates = Point(0, 0); // второй конструктор для дефолта внутри point
 }
 
@@ -17,19 +17,22 @@ void Line::setStartXY(size_t x, size_t y) {
     current_coordinates.setY(y);
 }
 
-void Line::setColorMode(bool epilepsia_mode) {
-    if (epilepsia_mode) {
-        ColorManager::setRandomColor();  // Устанавливаем случайный цвет для эпилепсии
-    } else {
-        ColorManager::setGreenColor();  // Устанавливаем зелёный цвет
-    }
-}
+// Цвет должен устанавливаться в конструкторе Line, храниться в переменной класса
+// и передаваться методу draw() класса Symbol для отрисовки символа нужного цвета.
+
+// void Line::setColorMode(bool epilepsia_mode) {
+//     if (epilepsia_mode) {
+//         ColorManager::setRandomColor();  // Устанавливаем случайный цвет для эпилепсии
+//     } else {
+//         ColorManager::setGreenColor();  // Устанавливаем зелёный цвет
+//     }
+// }
 
 void Line::move() {
     if (current_coordinates.getY() < terminal_height) { // Проверка, если не достигли нижней границы терминала
         // Генерируем случайный символ в пределах ASCII диапазона 33-126
         char randomSymbol = static_cast<char>(std::rand() % 93 + 33);
-        Symbol symbol(randomSymbol);
+        Symbol symbol(randomSymbol, color);
 
         if (bool_counter) {
             symbol.draw(current_coordinates.getX() - 1, current_coordinates.getY()); // делаем сдвиг для зиг-зага

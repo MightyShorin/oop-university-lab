@@ -5,10 +5,10 @@
 #include "Symbol.h"
 
 
-Symbol::Symbol(char symbol) : symbol(symbol) {}
+Symbol::Symbol(char symbol, std::string& color) : symbol(symbol), color(color) {}
 
 void Symbol::draw(size_t x, size_t y) const {
-    std::cout << "\033[" << y << ";" << x << "H" << symbol;  // Перемещаем курсор и рисуем символ
+    std::cout << "\033[" << y << ";" << x << "H" << color << symbol;  // Перемещаем курсор и рисуем символ
 }
 
 

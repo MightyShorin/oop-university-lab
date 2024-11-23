@@ -11,10 +11,11 @@
 
 class Symbol {
 public:
-    Symbol(char symbol);
+    Symbol(char symbol, std::string& color);
     void draw(size_t x, size_t y) const;
 private:
     char symbol;
+    std::string color;
 };
 
 #endif //SYMBOL_H

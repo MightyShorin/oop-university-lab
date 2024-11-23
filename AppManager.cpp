@@ -26,9 +26,13 @@ void AppManager::run() {
 
     while (true) {
         // Бесконечный цикл для создания новых змей
-        Line line(line_len, term_height);
+        Line line(line_len, term_height, epilepsia);
         line.setStartXY(std::rand() % term_width + 1, 1); // Установка начальной позиции линии
-        line.setColorMode(epilepsia);
+        // line.setColorMode(epilepsia);
+
+        Line line2(line_len, term_height, epilepsia);
+        line2.setStartXY(std::rand() % term_width + 1, 1); // Установка начальной позиции линии
+        // line2.setColorMode(epilepsia);
 
         // Переменная для отслеживания оставшихся шагов змейки
         size_t steps = term_height + line_len;
@@ -36,6 +40,7 @@ void AppManager::run() {
 
         while (steps > 0) {
             line.move();
+            line2.move();
             std::this_thread::sleep_for(std::chrono::milliseconds(1000 / speed));
             steps--;  // Уменьшаем количество оставшихся шагов
         }

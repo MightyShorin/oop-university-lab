@@ -5,10 +5,11 @@
 #include "ColorManager.h"
 
 
-void ColorManager::setGreenColor() {
-    std::cout << "\033[32m";  // Устанавливаем зелёный цвет
-}
-
-void ColorManager::setRandomColor() {
-    std::cout << "\033[38;5;" << std::rand() % 256 << "m";  // Устанавливаем случайный цвет
+std::string ColorManager::getRandomColor(bool epilepsia) {
+    if (epilepsia) {
+        std::string color = "\033[38;5;" + std::to_string(std::rand() % 256) + "m";
+        return color;
+    }
+    std::string color = "\033[32m";
+    return color;
 }

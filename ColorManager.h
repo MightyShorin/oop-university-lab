@@ -9,8 +9,7 @@
 
 class ColorManager {
 public:
-    static void setGreenColor();
-    static void setRandomColor();
+    static std::string getRandomColor(bool epilepsia);
 };
 
 
