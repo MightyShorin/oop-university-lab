@@ -17,6 +17,9 @@ void Line::setStartXY(size_t x, size_t y) {
     current_coordinates.setY(y);
 }
 
+size_t Line::getLenOnScreen() const {
+    return len_on_screen;
+}
 
 void Line::move() {
     if (current_coordinates.getY() < terminal_height) { // Проверка, если не достигли нижней границы терминала
@@ -51,4 +54,11 @@ void Line::clearLast() {
               << "\033[K"                          // Очищаем строку от начала до конца
               << "\033[" << len_on_screen << "B";  // Перемещаем курсор обратно вниз (для следующей итерации спуска)
     len_on_screen--;
+}
+
+Line::~Line() {
+    // пока не нужно
+    // current_coordinates — это объект Point, для которого будет вызван собственный деструктор
+    // color — это строка, которая сама уничтожится
+    // типы (size_t, bool) не требуют явной очистки
 }
