@@ -27,7 +27,8 @@ void AppManager::run() {
     while (true) {
 
         Line line(line_len, term_height, epilepsia);
-        line.setStartXY(std::rand() % term_width + 1, 1); // Установка начальной позиции линии
+        // line.setStartXY(std::rand() % term_width + 1, 1); // Установка начальной позиции линии
+        line.setStartXY(2 + std::rand() % (term_width - 2), 1); // Установка начальной позиции линии с 2 до term_width-1
 
         // Переменная для отслеживания оставшихся шагов змейки
         size_t steps = term_height + line_len;
