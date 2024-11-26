@@ -17,6 +17,9 @@ void Line::setStartXY(size_t x, size_t y) {
     current_coordinates.setY(y);
 }
 
+size_t Line::getLenOnScreen() const {
+    return len_on_screen;
+}
 
 void Line::move() {
 
@@ -70,4 +73,11 @@ void Line::clearLast() {
     len_on_screen--;
 
     // std::cout.flush();
+}
+
+Line::~Line() {
+    // пока не нужно
+    // current_coordinates — это объект Point, для которого будет вызван собственный деструктор
+    // color — это строка, которая сама уничтожится
+    // типы (size_t, bool) не требуют явной очистки
 }

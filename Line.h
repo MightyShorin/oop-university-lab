@@ -13,8 +13,10 @@
 class Line {
 public:
     Line(size_t length, size_t terminal_height, bool epilepsia);
+    ~Line();  // Деструктор
     void setStartXY(size_t x, size_t y);
     void move();
+    size_t getLenOnScreen() const;
 
 private:
     Point current_coordinates;
@@ -24,6 +26,7 @@ private:
     size_t offset;
     bool bool_counter;
     std::string color; // генерируется в конструкторе
+
 
     void clearLast();
 };
