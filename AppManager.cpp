@@ -25,7 +25,7 @@ void AppManager::run() {
 
     const size_t time_point_min = 0;
     const size_t time_point_max = 1000;
-    std::unordered_map<size_t, std::vector<Line>> time_lines; // хранение живых линий по времени (игра слов)
+    std::unordered_map<size_t, std::vector<Line>> time_lines; // хранение живых линий по времени
 
     std::set<size_t> unique_keys; // нам нужны уникальные времена
 
@@ -40,19 +40,37 @@ void AppManager::run() {
     }
 
     const size_t period_check = 1000;  // Период в миллисекундах
+    double interval = 1000.0 / speed; // Интервал в миллисекундах
 
-    auto start_time = std::chrono::system_clock::now();  // время начала цикла
+    auto start_time = std::chrono::steady_clock::now();  // время начала цикла
+    auto move_last_time = std::chrono::steady_clock::now();  // время последнего движения змеек
     while (true) {
-        auto current_time = std::chrono::system_clock::now();  // обновляем постоянно
+        auto current_time = std::chrono::steady_clock::now();  // обновляем постоянно
         auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();  // сколько прошло времени с начала цикла
+        auto move_elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - move_last_time).count();
 
         size_t time_in_period = elapsed_time % period_check;  // отбросим секунды, оставим только миллисекунды
+
+        if (move_elapsed_time >= interval) {
+            for (const auto& [time_point, _] : time_lines) {
+                for (auto it = time_lines[time_point].begin(); it != time_lines[time_point].end(); ) {
+                    it->move();
+                    if (it->getLenOnScreen() == 0) {
+                        it = time_lines[time_point].erase(it);  // Удаление и обновление итератора
+                    } else {
+                        ++it;  // Переход к следующему элементу
+                    }
+                }
+            }
+            move_last_time += std::chrono::milliseconds(static_cast<int>(interval));
+        }
 
         // Проверяем каждый таймпоинт
         for (const auto& [time_point, _] : time_lines) {  // распаковка пары, значение в данном коде нам не нужно
             if (time_in_period == time_point) {
                 time_lines[time_point].emplace_back(line_len, term_height, epilepsia);  // создаём новую линию в векторе
-                performAction(time_point, time_lines);  // передаем ссылочку на unordered_map
+                time_lines[time_point].back().setStartXY(2 + std::rand() % (term_width - 2), 1);  // устанавливаем случайные координаты начала линии
+                // performAction(time_point, time_lines);  // передаем ссылочку на unordered_map
             }
         }
         // Задержка, чтобы не перегружать CPU
@@ -60,24 +78,8 @@ void AppManager::run() {
     }
 }
 
-    // while (true) {
-    //     Line line(line_len, term_height, epilepsia);
-    //     line.setStartXY(std::rand() % term_width + 1, 1); // Установка начальной позиции линии
-    //
-    //     // Переменная для отслеживания оставшихся шагов змейки
-    //     size_t steps = term_height + line_len;
-    //
-    //     while (steps > 0) {
-    //         line.move();
-    //         std::this_thread::sleep_for(std::chrono::milliseconds(1000 / speed));
-    //         steps--;  // Уменьшаем количество оставшихся шагов
-    //     }
-    // }
-
 void AppManager::performAction(size_t time_point, std::unordered_map<size_t, std::vector<Line>>& time_lines) {
     auto& lines = time_lines[time_point];  // Ссылка на вектор
-    lines.back().setStartXY(2 + std::rand() % (term_width - 2), 1);  // Установка начальной позиции новой линии
-
     // используем итератор, так как удаляем элементы во время цикла
     for (auto it = lines.begin(); it != lines.end(); ) {
         it->move();
