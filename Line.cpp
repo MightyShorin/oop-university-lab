@@ -8,7 +8,7 @@
 #include <chrono>
 
 Line::Line(size_t length, size_t terminal_height, bool epilepsia)
-    : len(length), offset(len - 1), len_on_screen(0), bool_counter(false), terminal_height(terminal_height), color(ColorManager::getRandomColor(epilepsia)) {
+    : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height), color(ColorManager::getRandomColor(epilepsia)) {
     current_coordinates = Point(0, 0); // второй конструктор для дефолта внутри point
 }
 
@@ -29,17 +29,14 @@ void Line::move() {
         Symbol symbol(randomSymbol, color);
 
         if (bool_counter) {
-            // current_coordinates.setX(current_coordinates.getX() - 1); // Обновляем X перед отрисовкой
             symbol.draw(current_coordinates.getX() - 1, current_coordinates.getY()); // делаем сдвиг для зиг-зага
-            // std::cout.flush();
             bool_counter = false;
-            // Восстанавливаем X после рисования
-            // current_coordinates.setX(current_coordinates.getX() + 1); // Возвращаем X
         } else {
             symbol.draw(current_coordinates.getX(), current_coordinates.getY());
-            // std::cout.flush();
             bool_counter = true;
         }
+
+        symbols.emplace_back(symbol); // добавим символ с координатами в контейнер
 
         current_coordinates.setY(current_coordinates.getY() + 1); // Увеличиваем координату y (движение вниз)
         len_on_screen++;
@@ -51,7 +48,6 @@ void Line::move() {
 
     } else {
         std::cout.flush();
-        offset--;
         clearLast();
     }
     // std::cout.flush();  // Сброс буфера (так как вывод накапливается и выводится всё разом)
@@ -59,31 +55,16 @@ void Line::move() {
 
 void Line::clearLast() {
 
-    // при создании множества змеек в конце терминала сохраняется
-    // последнее положение курсора в другом месте терминала
-    // и происходит неправильный переход к последнему символу
+    if (!symbols.empty()) {
+        const Symbol& oldestSymbol = symbols.front(); // получаем самый старый символ по ссылке
+        size_t x = oldestSymbol.getX();
+        size_t y = oldestSymbol.getY();
 
-    std::cout << "\033[s"; // Сохраняем текущее положение курсора
-    std::cout << "\033[" << (offset) << "A";  // Перемещаем курсор вверх на len_on_screen строк
-    if (offset % 2 == 0) {
-        std::cout << "\033[1D";  // Сдвиг влево на 1 символ
-    } else if (bool_counter == true) {
-        std::cout << "\033[2D";  // Сдвиг влево на 2 символа
+        std::cout << "\033[" << y << ";" << x << "H "; // очищаем символ на экране
+        symbols.erase(symbols.begin()); // освобождаем память
+        len_on_screen--;
     }
 
-    std::cout << " ";  // Заменяем последний символ пробелом
-
-    // if (bool_counter == true) {
-    //     std::cout << "\033[1C";
-    // }
-    // std::cout << "\033[" << (offset) << "B";
-
-    // std::cout << "\033[" << (offset) << "B";  // Возвращаем курсор вниз
-    std::cout << "\033[u"; // Восстанавливаем сохраненное положение курсора
-
-    len_on_screen--;
-
-    // std::cout.flush();
 }
 
 Line::~Line() {

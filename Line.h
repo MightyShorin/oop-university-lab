@@ -23,9 +23,10 @@ private:
     size_t len;
     size_t len_on_screen;
     size_t terminal_height;  // Переменная для хранения высоты терминала
-    size_t offset;
     bool bool_counter;
     std::string color; // генерируется в конструкторе
+
+    std::vector<Symbol> symbols; // Контейнер для хранения символов с координатами
 
 
     void clearLast();

@@ -70,7 +70,6 @@ void AppManager::run() {
             if (time_in_period == time_point) {
                 time_lines[time_point].emplace_back(line_len, term_height, epilepsia);  // создаём новую линию в векторе
                 time_lines[time_point].back().setStartXY(2 + std::rand() % (term_width - 2), 1);  // устанавливаем случайные координаты начала линии
-                // performAction(time_point, time_lines);  // передаем ссылочку на unordered_map
             }
         }
         // Задержка, чтобы не перегружать CPU
