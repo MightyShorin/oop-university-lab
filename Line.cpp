@@ -8,7 +8,8 @@
 #include <chrono>
 
 Line::Line(size_t length, size_t terminal_height, bool epilepsia)
-    : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height), color(ColorManager::getRandomColor(epilepsia)) {
+    : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height),
+      color(ColorManager::getRandomColor(epilepsia)) {
     current_coordinates = Point(0, 0); // второй конструктор для дефолта внутри point
 }
 
@@ -22,8 +23,8 @@ size_t Line::getLenOnScreen() const {
 }
 
 void Line::move() {
-
-    if (current_coordinates.getY() < terminal_height) { // Проверка, если не достигли нижней границы терминала
+    if (current_coordinates.getY() < terminal_height) {
+        // Проверка, если не достигли нижней границы терминала
         // Генерируем случайный символ в пределах ASCII диапазона 33-126
         char randomSymbol = static_cast<char>(std::rand() % 93 + 33);
         Symbol symbol(randomSymbol, color);
@@ -49,7 +50,6 @@ void Line::move() {
             clearLast();
             std::cout.flush();
         }
-
     } else {
         clearLast();
         std::cout.flush();
@@ -57,17 +57,15 @@ void Line::move() {
 }
 
 void Line::clearLast() {
-
     if (!symbols.empty()) {
-        const Symbol& oldestSymbol = symbols.front(); // получаем самый старый символ по ссылке
-        size_t x = oldestSymbol.getX();
-        size_t y = oldestSymbol.getY();
+        const Symbol &last_symbol = symbols.front(); // получаем самый старый символ по ссылке
+        size_t x = last_symbol.getX();
+        size_t y = last_symbol.getY();
 
         std::cout << "\033[" << y << ";" << x << "H "; // очищаем символ на экране
         symbols.erase(symbols.begin()); // освобождаем память
         len_on_screen--;
     }
-
 }
 
 Line::~Line() {

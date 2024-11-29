@@ -8,10 +8,13 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <termios.h> // Для управления терминалом
+#include <unistd.h>  // Для STDIN_FILENO
+#include <fcntl.h>   // Для fcntl и флагов F_GETFL, F_SETFL, O_NONBLOCK
 
 AppManager::AppManager(bool epilepsia, size_t line_len, size_t speed, size_t frequency)
     : epilepsia(epilepsia), line_len(line_len), speed(speed), frequency(frequency) {
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));  // Инициализация генератора случайных чисел
+    std::srand(static_cast<unsigned int>(std::time(nullptr))); // инициализация генератора случайных чисел
 }
 
 void AppManager::inputParameters() {
@@ -19,73 +22,105 @@ void AppManager::inputParameters() {
 }
 
 void AppManager::run() {
-    Terminal::clearScreen();  // Очистка экрана
+    std::cout << "\033[?25l"; // cкрываем курсор
 
-    Terminal::getSize(term_width, term_height);  // Получение размеров терминала
+    Terminal::clearScreen(); // очистка экрана
+
+    Terminal::getSize(term_width, term_height); // получение размеров терминала
 
     const size_t time_point_min = 0;
     const size_t time_point_max = 1000;
-    std::unordered_map<size_t, std::vector<Line>> time_lines; // хранение живых линий по времени
+    std::unordered_map<size_t, std::vector<Line> > time_lines; // хранение живых линий по времени
+    std::unordered_map<size_t, size_t> counters; // таймеры для каждого времени
 
     std::set<size_t> unique_keys; // нам нужны уникальные времена
 
     while (unique_keys.size() < frequency) {
-        size_t random_time_point = time_point_min + std::rand() % (time_point_max - time_point_min + 1); // формула подходит под любой диапазон
+        size_t random_time_point = time_point_min + std::rand() % (time_point_max - time_point_min + 1);
+        // формула подходит под любой диапазон
         unique_keys.insert(random_time_point);
     }
 
-    // Заполняем unordered_map
-    for (const auto& key : unique_keys) {
+    // заполняем unordered_map
+    for (const auto &key: unique_keys) {
         time_lines[key] = {}; // пока пустуют, грусть, печаль
+        counters[key] = key; // таймеры ставим на максимум
     }
 
-    const size_t period_check = 1000;  // Период в миллисекундах
-    double interval = 1000.0 / speed; // Интервал в миллисекундах
+    size_t interval = 1000 / speed; // интервал в миллисекундах
 
-    auto start_time = std::chrono::steady_clock::now();  // время начала цикла
-    auto move_last_time = std::chrono::steady_clock::now();  // время последнего движения змеек
+    char exit;
+    size_t time = 0;
     while (true) {
-        auto current_time = std::chrono::steady_clock::now();  // обновляем постоянно
-        auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();  // сколько прошло времени с начала цикла
-        auto move_elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - move_last_time).count();
+        // выход из программы по нажатию клавиши 'q' или 'Q'
+        if (keyPressed(exit) && (exit == 'q' || exit == 'Q')) {
+            break;
+        }
 
-        size_t time_in_period = elapsed_time % period_check;  // отбросим секунды, оставим только миллисекунды
-
-        if (move_elapsed_time >= interval) {
-            for (const auto& [time_point, _] : time_lines) {
-                for (auto it = time_lines[time_point].begin(); it != time_lines[time_point].end(); ) {
+        for (auto &[time_point, lines]: time_lines) {
+            if ((time - time_point) % interval == 0) {
+                // движение линий из каждого вектора в нужное время (интервал в разное время)
+                for (auto it = lines.begin(); it != lines.end();) {
                     it->move();
                     if (it->getLenOnScreen() == 0) {
-                        it = time_lines[time_point].erase(it);  // Удаление и обновление итератора
+                        it = lines.erase(it); // удаление и обновление итератора
                     } else {
-                        ++it;  // Переход к следующему элементу
+                        ++it; // переход к следующему элементу
                     }
                 }
             }
-            move_last_time += std::chrono::milliseconds(static_cast<int>(interval));
         }
 
-        // Проверяем каждый таймпоинт
-        for (const auto& [time_point, _] : time_lines) {  // распаковка пары, значение в данном коде нам не нужно
-            if (time_in_period == time_point) {
-                time_lines[time_point].emplace_back(line_len, term_height, epilepsia);  // создаём новую линию в векторе
-                time_lines[time_point].back().setStartXY(2 + std::rand() % (term_width - 2), 1);  // устанавливаем случайные координаты начала линии
+        // создаем новые линии на основании таймеров
+        for (auto &[key, count]: counters) {
+            if (count == 0) {
+                time_lines[key].emplace_back(line_len, term_height, epilepsia);
+                time_lines[key].back().setStartXY(2 + std::rand() % (term_width - 2), 1);
+
+                count = time_point_max; // секунда кончилась, начинаем новую
             }
+            count--; // задержка 1 миллисекунда, поэтому уменьшаем на 1
         }
+
+        std::cout << "\033[" << 1 << ";" << 1 << "H";
         // Задержка, чтобы не перегружать CPU
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-}
+        time += 1;
 
-void AppManager::performAction(size_t time_point, std::unordered_map<size_t, std::vector<Line>>& time_lines) {
-    auto& lines = time_lines[time_point];  // Ссылка на вектор
-    // используем итератор, так как удаляем элементы во время цикла
-    for (auto it = lines.begin(); it != lines.end(); ) {
-        it->move();
-        if (it->getLenOnScreen() == line_len) {
-            it = lines.erase(it);  // Удаление и обновление итератора
-        } else {
-            ++it;  // Переход к следующему элементу
+        // обнуление времени, чтобы не переполнялось
+        if (time == 60000) {
+            time = 0;
         }
     }
+
+    std::cout << "\033[?25h"; // возвращаем курсор
+}
+
+bool AppManager::keyPressed(char &key) {
+    struct termios oldt, newt; // для сохранения старых и установки новых параметров терминала
+    int oldf; // для сохранения флагов
+    char ch; // для хранения символа с клавиатуры
+
+    tcgetattr(STDIN_FILENO, &oldt); // сохраняем текущие настройки терминала
+    newt = oldt; // копия старых настроек
+    // отключаем канонический ввод (чтобы считывать без Enter) и вывод символов (чтобы не печатались символы)
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt); // применяем новые настройки
+
+    oldf = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, oldf | O_NONBLOCK); // устанавливаем неблокирующий ввод, чтобы не ждать и возвращать 0
+
+    // читаем символ, если он есть
+    if (read(STDIN_FILENO, &ch, 1) > 0) {
+        key = ch;
+        // восстанавливаем настройки терминала
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+        fcntl(STDIN_FILENO, F_SETFL, oldf);
+        return true;
+    }
+
+    // восстанавливаем настройки терминала
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    fcntl(STDIN_FILENO, F_SETFL, oldf);
+    return false;
 }

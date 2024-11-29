@@ -27,6 +27,7 @@ private:
     size_t term_height, term_width;
 
     void performAction(size_t time_point, std::unordered_map<size_t, std::vector<Line>>& time_lines);
+    bool keyPressed(char &key); // функция проверки ввода
 };
 
 #endif //APPMANAGER_H
