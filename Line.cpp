@@ -41,16 +41,19 @@ void Line::move() {
         current_coordinates.setY(current_coordinates.getY() + 1); // Увеличиваем координату y (движение вниз)
         len_on_screen++;
 
-        std::cout.flush();  // методом подгона нашел место для этого метода
-        if (len_on_screen == len) {
+        if (len_on_screen <= len) {
+            std::cout.flush();
+        }
+
+        if (len_on_screen > len) {
             clearLast();
+            std::cout.flush();
         }
 
     } else {
-        std::cout.flush();
         clearLast();
+        std::cout.flush();
     }
-    // std::cout.flush();  // Сброс буфера (так как вывод накапливается и выводится всё разом)
 }
 
 void Line::clearLast() {
