@@ -15,7 +15,7 @@
 
 class AppManager {
 public:
-    AppManager(bool epilepsia, size_t line_len, size_t speed, size_t frequency);
+    AppManager(bool epilepsia, size_t line_len, size_t speed, size_t frequency, size_t chance, size_t min_radius, size_t max_radius);
     void run();
     void inputParameters();  // Метод для ввода параметров
 
@@ -24,9 +24,13 @@ private:
     size_t line_len;
     size_t speed;
     size_t frequency;
+    size_t chance;
+    size_t min_radius;
+    size_t max_radius;
+
     size_t term_height, term_width;
 
-    void performAction(size_t time_point, std::unordered_map<size_t, std::vector<Line>>& time_lines);
+    // void performAction(size_t time_point, std::unordered_map<size_t, std::vector<Line>>& time_lines);
     bool keyPressed(char &key); // функция проверки ввода
 };
 

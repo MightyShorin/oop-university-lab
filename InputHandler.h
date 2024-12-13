@@ -12,7 +12,7 @@
 
 class InputHandler {
 public:
-    static void getParameters(size_t &frequency, size_t &speed, size_t &line_len, bool &epilepsia);
+    static void getParameters(size_t &frequency, size_t &speed, size_t &line_len, bool &epilepsia, size_t &chance, size_t &min_radius, size_t &max_radius);
 };
 
 

@@ -12,13 +12,13 @@
 #include <unistd.h>  // Для STDIN_FILENO
 #include <fcntl.h>   // Для fcntl и флагов F_GETFL, F_SETFL, O_NONBLOCK
 
-AppManager::AppManager(bool epilepsia, size_t line_len, size_t speed, size_t frequency)
-    : epilepsia(epilepsia), line_len(line_len), speed(speed), frequency(frequency) {
+AppManager::AppManager(bool epilepsia, size_t line_len, size_t speed, size_t frequency, size_t chance, size_t min_radius, size_t max_radius)
+    : epilepsia(epilepsia), line_len(line_len), speed(speed), frequency(frequency), chance(chance), min_radius(min_radius), max_radius(max_radius) {
     std::srand(static_cast<unsigned int>(std::time(nullptr))); // инициализация генератора случайных чисел
 }
 
 void AppManager::inputParameters() {
-    InputHandler::getParameters(frequency, speed, line_len, epilepsia);
+    InputHandler::getParameters(frequency, speed, line_len, epilepsia, chance, min_radius, max_radius);
 }
 
 void AppManager::run() {

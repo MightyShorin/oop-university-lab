@@ -26,7 +26,7 @@ void Line::move() {
     if (current_coordinates.getY() < terminal_height) {
         // Проверка, если не достигли нижней границы терминала
         // Генерируем случайный символ в пределах ASCII диапазона 33-126
-        char randomSymbol = static_cast<char>(std::rand() % 93 + 33);
+        char randomSymbol = static_cast<char>(std::rand() % 93 + 33); // закинуть в конструктор символа !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Symbol symbol(randomSymbol, color);
 
         if (bool_counter) {
@@ -56,6 +56,7 @@ void Line::move() {
     }
 }
 
+// конструктор символа !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void Line::clearLast() {
     if (!symbols.empty()) {
         const Symbol &last_symbol = symbols.front(); // получаем самый старый символ по ссылке

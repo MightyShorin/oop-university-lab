@@ -25,10 +25,13 @@ int CommandLineParser::parse() {
         speed = 5; // избавиться от этого перегрузкой конструктора
         line_len = 5;
         epilepsia = true;
+        chance = 100;
+        min_radius = 1;
+        max_radius = 7;
         return 2;
     }
 
-    if (parseFrequency() && parseSpeed() && parseLineLength() && parseEpilepsia()) {
+    if (parseFrequency() && parseSpeed() && parseLineLength() && parseEpilepsia() && parseChance() && parseMinRadius() && parseMaxRadius()) {
         return 3;
     } else {
         return 1;
@@ -49,11 +52,21 @@ size_t CommandLineParser::getLineLength() const {
 bool CommandLineParser::isEpilepsia() const {
     return epilepsia;
 }
+size_t CommandLineParser::getChance() const {
+    return chance;
+}
+size_t CommandLineParser::getMinRadius() const {
+    return min_radius;
+}
+size_t CommandLineParser::getMaxRadius() const {
+    return max_radius;
+}
 
 
 void CommandLineParser::printHelp() {
-    std::cout << "Использование: программа [скорость] [длина линии] [эпилепсия]\n";
+    std::cout << "Использование: программа [частота] [скорость] [длина линии] [эпилепсия]\n";
     std::cout << "где:\n";
+    std::cout << "  частота - целое число от 1 до 30\n";
     std::cout << "  скорость - целое число от 1 до 30\n";
     std::cout << "  длина линии - целое число от 1 до 30\n";
     std::cout << "  эпилепсия - 'Y' (включить режим эпилепсии) или 'N' (выключить)\n";
@@ -109,6 +122,52 @@ bool CommandLineParser::parseEpilepsia() {
         epilepsia = false;
     } else {
         std::cerr << "Ошибка: третий аргумент должен быть 'Y' или 'N'. Введите --help" << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool CommandLineParser::parseChance() {
+    try {
+        chance = std::stoi(argv[5]);
+        if (chance < 1 || chance > 1000) {
+            std::cerr << "Ошибка: вероятность взрыва должна быть целым числом от 1 до 1000. Введите --help" << std::endl;
+            return false;
+        }
+    } catch (std::invalid_argument&) {
+        std::cerr << "Ошибка: вероятность взрыва должна быть целым числом от 1 до 1000. Введите --help" << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool CommandLineParser::parseMinRadius() {
+    try {
+        chance = std::stoi(argv[6]);
+        if (chance < 1 || chance > 10) {
+            std::cerr << "Ошибка: минимальный радиус взрыва должен быть целым числом от 1 до 10. Введите --help" << std::endl;
+            return false;
+        }
+    } catch (std::invalid_argument&) {
+        std::cerr << "Ошибка: минимальный радиус взрыва должен быть целым числом от 1 до 10. Введите --help" << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool CommandLineParser::parseMaxRadius() {
+    try {
+        chance = std::stoi(argv[7]);
+        if (chance < 1 || chance > 10) {
+            std::cerr << "Ошибка: максимальный радиус взрыва должен быть целым числом от 1 до 10. Введите --help" << std::endl;
+            return false;
+        }
+        if (max_radius <= min_radius) {
+            std::cerr << "Ошибка: максимальный радиус должен быть больше минимального радиуса." << std::endl;
+            return false;
+        }
+    } catch (std::invalid_argument&) {
+        std::cerr << "Ошибка: максимальный радиус взрыва должен быть целым числом от 1 до 10. Введите --help" << std::endl;
         return false;
     }
     return true;

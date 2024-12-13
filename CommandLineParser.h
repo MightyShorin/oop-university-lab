@@ -17,6 +17,9 @@ public:
     size_t getSpeed() const;
     size_t getLineLength() const;
     bool isEpilepsia() const;
+    size_t getChance() const;
+    size_t getMinRadius() const;
+    size_t getMaxRadius() const;
 
 private:
     int argc;
@@ -25,12 +28,18 @@ private:
     size_t speed;
     size_t line_len;
     bool epilepsia;
+    size_t chance;
+    size_t min_radius;
+    size_t max_radius;
 
     static void printHelp();
     bool parseFrequency();
     bool parseSpeed();
     bool parseLineLength();
     bool parseEpilepsia();
+    bool parseChance();
+    bool parseMinRadius();
+    bool parseMaxRadius();
 };
 
 
