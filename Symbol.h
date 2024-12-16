@@ -9,7 +9,7 @@
 
 class Symbol {
 public:
-    Symbol(char symbol, std::string& color);
+    Symbol(std::string& color);
     void draw(size_t x, size_t y);
     size_t getX() const { return x; }
     size_t getY() const { return y; }

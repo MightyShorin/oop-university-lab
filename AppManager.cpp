@@ -12,6 +12,8 @@
 #include <unistd.h>  // Для STDIN_FILENO
 #include <fcntl.h>   // Для fcntl и флагов F_GETFL, F_SETFL, O_NONBLOCK
 
+#include "Explosion.h"
+
 AppManager::AppManager(bool epilepsia, size_t line_len, size_t speed, size_t frequency, size_t chance, size_t min_radius, size_t max_radius)
     : epilepsia(epilepsia), line_len(line_len), speed(speed), frequency(frequency), chance(chance), min_radius(min_radius), max_radius(max_radius) {
     std::srand(static_cast<unsigned int>(std::time(nullptr))); // инициализация генератора случайных чисел
@@ -30,20 +32,18 @@ void AppManager::run() {
 
     const size_t time_point_min = 0;
     const size_t time_point_max = 1000;
-    std::unordered_map<size_t, std::vector<Line> > time_lines; // хранение живых линий по времени
+    std::unordered_map<size_t, std::vector<std::shared_ptr<Figure>>> time_figures; // хранение живых линий и существующих взрывов по времени
     std::unordered_map<size_t, size_t> counters; // таймеры для каждого времени
 
-    std::set<size_t> unique_keys; // нам нужны уникальные времена
-
+    std::set<size_t> unique_keys; // нам нужны уникальные времена для появления линий
     while (unique_keys.size() < frequency) {
-        size_t random_time_point = time_point_min + std::rand() % (time_point_max - time_point_min + 1);
-        // формула подходит под любой диапазон
+        size_t random_time_point = time_point_min + std::rand() % (time_point_max - time_point_min + 1);  // формула подходит под любой диапазон
         unique_keys.insert(random_time_point);
     }
 
     // заполняем unordered_map
     for (const auto &key: unique_keys) {
-        time_lines[key] = {}; // пока пустуют, грусть, печаль
+        time_figures[key] = {}; // пустые вектора для каждого времени
         counters[key] = key; // таймеры ставим на максимум
     }
 
@@ -57,16 +57,49 @@ void AppManager::run() {
             break;
         }
 
-        for (auto &[time_point, lines]: time_lines) {
+        for (auto &[time_point, figures]: time_figures) {
             if ((time - time_point) % interval == 0) {
                 // движение линий из каждого вектора в нужное время (интервал в разное время)
-                for (auto it = lines.begin(); it != lines.end();) {
-                    it->move();
-                    if (it->getLenOnScreen() == 0) {
-                        it = lines.erase(it); // удаление и обновление итератора
+                for (auto it = figures.begin(); it != figures.end();) {
+                    // проверка типа объекта для обработки
+                    // если объект, на который указывает указатель, действительно является
+                    // экземпляром класса Line или его производного класса, dynamic_cast
+                    // вернёт указатель на Line. Если нет, он вернёт nullptr.
+                    auto line_ptr = dynamic_cast<Line *>(it->get());
+                    if (line_ptr) {
+                        line_ptr->move(); // двигаем линию
+                        if (std::rand() % 1000 < chance) {
+                            // создаём Explosion на координатах первого символа линии
+                            size_t x = line_ptr->getCurrentX(); // надо получить координаты первого символа
+                            size_t y = line_ptr->getCurrentY();
+                            figures.emplace_back(std::make_shared<Explosion>(x, y, min_radius, max_radius, term_width, term_height));
+                            figures.back()->move();
+
+                            line_ptr->shorten(); // Укорачиваем линию
+                        }
+
+                        // shared_ptr использует атомарные операции для отслеживания количества ссылок,
+                        // и если объект уничтожается, но операции все еще пытаются работать с ним,
+                        // это приведет к ошибке. Можно ли не использовать shared_ptr?
+                        if (line_ptr->getLenOnScreen() == 0) {  // !!!! нельзя использовать, так как это мб взрыв первого символа
+                            it = figures.erase(it); // удаляем линию, если она полностью ушла
+                            continue;
+                        }
                     } else {
-                        ++it; // переход к следующему элементу
+                        // Если объект Explosion и его анимация завершена — удаляем
+                        auto explosion_ptr = dynamic_cast<Explosion *>(it->get());
+                        if (explosion_ptr && explosion_ptr->isComplete()) {
+                            it = figures.erase(it);
+                            continue;
+                        }
                     }
+                    ++it;
+                    // it->draw();
+                    // if (it->getLenOnScreen() == 0) {
+                    //     it = figures.erase(it); // удаление и обновление итератора
+                    // } else {
+                    //     ++it; // переход к следующему элементу
+                    // }
                 }
             }
         }
@@ -74,8 +107,9 @@ void AppManager::run() {
         // создаем новые линии на основании таймеров
         for (auto &[key, count]: counters) {
             if (count == 0) {
-                time_lines[key].emplace_back(line_len, term_height, epilepsia);
-                time_lines[key].back().setStartXY(2 + std::rand() % (term_width - 2), 1);
+                time_figures[key].emplace_back(std::make_shared<Line>(line_len, term_height, epilepsia, chance));
+                auto &line = dynamic_cast<Line &>(*time_figures[key].back());  // надо достать ссылку на объект Line
+                line.setStartXY(2 + std::rand() % (term_width - 2), 1);
 
                 count = time_point_max; // секунда кончилась, начинаем новую
             }

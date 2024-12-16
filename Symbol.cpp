@@ -5,7 +5,7 @@
 #include "Symbol.h"
 
 
-Symbol::Symbol(char symbol, std::string& color) : symbol(symbol), color(color), x(0), y(0) {}
+Symbol::Symbol(std::string& color) : color(color), x(0), y(0), symbol(static_cast<char>(std::rand() % 93 + 33)) {}
 
 void Symbol::draw(size_t x, size_t y) {
     this->x = x; // Сохраняем координаты

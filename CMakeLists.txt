@@ -20,4 +20,8 @@ add_executable(LAB1_MAIN main.cpp
         InputHandler.h
         CommandLineParser.cpp
         CommandLineParser.h
+        Figure.cpp
+        Figure.h
+        Explosion.cpp
+        Explosion.h
 )

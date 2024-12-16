@@ -14,7 +14,7 @@ int CommandLineParser::parse() {
         return 1; // Обработка помощи
     }
 
-    if (argc != 5 && argc != 1) {
+    if (argc != 8 && argc != 1) {
         std::cerr << "Ошибка: Ожидается четыре аргумента. Введите --help" << std::endl;
         return 1;
     }
@@ -143,8 +143,8 @@ bool CommandLineParser::parseChance() {
 
 bool CommandLineParser::parseMinRadius() {
     try {
-        chance = std::stoi(argv[6]);
-        if (chance < 1 || chance > 10) {
+        min_radius = std::stoi(argv[6]);
+        if (min_radius < 1 || min_radius > 10) {
             std::cerr << "Ошибка: минимальный радиус взрыва должен быть целым числом от 1 до 10. Введите --help" << std::endl;
             return false;
         }
@@ -157,8 +157,8 @@ bool CommandLineParser::parseMinRadius() {
 
 bool CommandLineParser::parseMaxRadius() {
     try {
-        chance = std::stoi(argv[7]);
-        if (chance < 1 || chance > 10) {
+        max_radius = std::stoi(argv[7]);
+        if (max_radius < 1 || max_radius > 10) {
             std::cerr << "Ошибка: максимальный радиус взрыва должен быть целым числом от 1 до 10. Введите --help" << std::endl;
             return false;
         }

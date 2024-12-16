@@ -3,12 +3,13 @@
 //
 
 #include "Line.h"
+#include "Explosion.h"
 #include "ColorManager.h"
 #include <thread>
 #include <chrono>
 
-Line::Line(size_t length, size_t terminal_height, bool epilepsia)
-    : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height),
+Line::Line(size_t length, size_t terminal_height, bool epilepsia, size_t chance)
+    : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height), chance(chance),
       color(ColorManager::getRandomColor(epilepsia)) {
     current_coordinates = Point(0, 0); // второй конструктор для дефолта внутри point
 }
@@ -22,17 +23,32 @@ size_t Line::getLenOnScreen() const {
     return len_on_screen;
 }
 
+void Line::shorten() {
+    if (len_on_screen > 0) {
+        len_on_screen--;
+    }
+}
+
+size_t Line::getCurrentX() const {
+    return current_coordinates.getX();
+}
+
+size_t Line::getCurrentY() const {
+    return current_coordinates.getY();
+}
+
 void Line::move() {
     if (current_coordinates.getY() < terminal_height) {
         // Проверка, если не достигли нижней границы терминала
         // Генерируем случайный символ в пределах ASCII диапазона 33-126
-        char randomSymbol = static_cast<char>(std::rand() % 93 + 33); // закинуть в конструктор символа !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        Symbol symbol(randomSymbol, color);
+        Symbol symbol(color);
 
         if (bool_counter) {
-            symbol.draw(current_coordinates.getX() - 1, current_coordinates.getY()); // делаем сдвиг для зиг-зага
+            current_coordinates.setX(current_coordinates.getX() - 1);
+            symbol.draw(current_coordinates.getX(), current_coordinates.getY()); // делаем сдвиг для зиг-зага
             bool_counter = false;
         } else {
+            current_coordinates.setX(current_coordinates.getX() + 1);
             symbol.draw(current_coordinates.getX(), current_coordinates.getY());
             bool_counter = true;
         }
@@ -41,6 +57,8 @@ void Line::move() {
 
         current_coordinates.setY(current_coordinates.getY() + 1); // Увеличиваем координату y (движение вниз)
         len_on_screen++;
+
+        // надо добавить метод, который удалит лишний символ при взрыве !!!!
 
         if (len_on_screen <= len) {
             std::cout.flush();
