@@ -24,10 +24,13 @@ size_t Line::getLenOnScreen() const {
 }
 
 void Line::shorten() {
-    if (len_on_screen > 0) {
-        len_on_screen--;
+    if (len_on_screen > 0 && !symbols.empty()) {
+        symbols.pop_back(); // Удаляем символ из контейнера
+        len_on_screen--; // Уменьшаем длину линии
+        len--;
     }
 }
+
 
 size_t Line::getCurrentX() const {
     return current_coordinates.getX();
