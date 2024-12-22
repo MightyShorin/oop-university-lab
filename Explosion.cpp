@@ -32,6 +32,10 @@ void Explosion::move() {
         }
     }
 
+    // if (radius > 1) {
+    //     clearLast(); // Очищаем предыдущую фазу
+    // }
+
     std::cout.flush();
 
     // Проверяем, завершён ли взрыв

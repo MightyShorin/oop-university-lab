@@ -89,8 +89,8 @@ void InputHandler::getParameters(size_t &frequency, size_t &speed, size_t &line_
             std::cin.clear(); // Сбрасываем состояние ошибки
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Игнорируем неверный ввод
             std::cout << "Ошибка: максимальный радиус взрыва должен быть целым числом от 1 до 10. Попробуйте снова: ";
-        } else if (max_radius <= min_radius) {
-            std::cout << "Ошибка: максимальный радиус должен быть больше минимального радиуса. Попробуйте снова: ";
+        } else if (max_radius < min_radius) {
+            std::cout << "Ошибка: максимальный радиус должен быть больше (=) минимального радиуса. Попробуйте снова: ";
         } else {
             break; // Ввод корректен
         }

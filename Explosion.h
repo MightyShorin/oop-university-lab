@@ -13,6 +13,7 @@ public:
     Explosion(size_t x, size_t y, size_t min_radius, size_t max_radius, size_t term_width, size_t term_height);
     bool isComplete() const { return is_complete; }
     void move() override;
+    void clearLast() override;
 
 private:
     size_t center_x;
@@ -22,9 +23,10 @@ private:
     size_t term_height;
 
     bool is_complete;
+    size_t complete_timer;
     size_t radius;
 
-    void clearLast() override;
+
 };
 
 

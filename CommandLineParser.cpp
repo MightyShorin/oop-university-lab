@@ -162,8 +162,8 @@ bool CommandLineParser::parseMaxRadius() {
             std::cerr << "Ошибка: максимальный радиус взрыва должен быть целым числом от 1 до 10. Введите --help" << std::endl;
             return false;
         }
-        if (max_radius <= min_radius) {
-            std::cerr << "Ошибка: максимальный радиус должен быть больше минимального радиуса." << std::endl;
+        if (max_radius < min_radius) {
+            std::cerr << "Ошибка: максимальный радиус должен быть больше (=) минимального радиуса." << std::endl;
             return false;
         }
     } catch (std::invalid_argument&) {

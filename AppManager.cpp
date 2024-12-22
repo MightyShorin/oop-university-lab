@@ -25,14 +25,15 @@ void AppManager::inputParameters() {
 
 void AppManager::run() {
     std::cout << "\033[?25l"; // cкрываем курсор
-
     Terminal::clearScreen(); // очистка экрана
-
     Terminal::getSize(term_width, term_height); // получение размеров терминала
 
     const size_t time_point_min = 0;
     const size_t time_point_max = 1000;
-    std::unordered_map<size_t, std::vector<std::shared_ptr<Figure>>> time_figures; // хранение живых линий и существующих взрывов по времени
+
+    std::unordered_map<size_t, std::vector<Line>> lines;
+    std::unordered_map<size_t, std::vector<Explosion>> explosions;
+
     std::unordered_map<size_t, size_t> counters; // таймеры для каждого времени
 
     std::set<size_t> unique_keys; // нам нужны уникальные времена для появления линий
@@ -43,63 +44,56 @@ void AppManager::run() {
 
     // заполняем unordered_map
     for (const auto &key: unique_keys) {
-        time_figures[key] = {}; // пустые вектора для каждого времени
+        lines[key] = {}; // пустые вектора для каждого времени
+        explosions[key] = {};
         counters[key] = key; // таймеры ставим на максимум
     }
 
-    size_t interval = 1000 / speed; // интервал в миллисекундах
-
+    const size_t interval = 1000 / speed; // интервал в миллисекундах
+    const size_t explosion_interval = 500; // Интервал обновления взрывов (2 символа в секунду)
     char exit;
     size_t time = 0;
+
     while (true) {
         // выход из программы по нажатию клавиши 'q' или 'Q'
         if (keyPressed(exit) && (exit == 'q' || exit == 'Q')) {
             break;
         }
 
-        for (auto &[time_point, figures]: time_figures) {
+        for (auto &[time_point, line]: lines) {
             if ((time - time_point) % interval == 0) {
                 // движение линий из каждого вектора в нужное время (интервал в разное время)
-                for (auto it = figures.begin(); it != figures.end();) {
-                    // проверка типа объекта для обработки
-                    // если объект, на который указывает указатель, действительно является
-                    // экземпляром класса Line или его производного класса, dynamic_cast
-                    // вернёт указатель на Line. Если нет, он вернёт nullptr.
-                    auto line_ptr = dynamic_cast<Line *>(it->get());
-                    if (line_ptr) {
-                        line_ptr->move(); // двигаем линию
-                        if (std::rand() % 1000 < chance) {
-                            // создаём Explosion на координатах первого символа линии
-                            size_t x = line_ptr->getCurrentX(); // надо получить координаты первого символа
-                            size_t y = line_ptr->getCurrentY();
-                            figures.emplace_back(std::make_shared<Explosion>(x, y, min_radius, max_radius, term_width, term_height));
-                            figures.back()->move();
-
-                            line_ptr->shorten(); // Укорачиваем линию
-                        }
-
-                        // shared_ptr использует атомарные операции для отслеживания количества ссылок,
-                        // и если объект уничтожается, но операции все еще пытаются работать с ним,
-                        // это приведет к ошибке. Можно ли не использовать shared_ptr?
-                        if (line_ptr->getLenOnScreen() == 0) {  // !!!! нельзя использовать, так как это мб взрыв первого символа
-                            it = figures.erase(it); // удаляем линию, если она полностью ушла
-                            continue;
-                        }
-                    } else {
-                        // Если объект Explosion и его анимация завершена — удаляем
-                        auto explosion_ptr = dynamic_cast<Explosion *>(it->get());
-                        if (explosion_ptr && explosion_ptr->isComplete()) {
-                            it = figures.erase(it);
-                            continue;
-                        }
+                for (auto it = line.begin(); it != line.end();) {
+                    it->move();
+                    if (std::rand() % 1000 < chance) {
+                        size_t x = it->getCurrentX();
+                        size_t y = it->getCurrentY();
+                        explosions[time_point].emplace_back(x, y, min_radius, max_radius, term_width, term_height); // нужны ли таймпоиниты взрыву?
+                        // explosions[time_point].back().move();
+                        it->shorten();
                     }
-                    ++it;
-                    // it->draw();
-                    // if (it->getLenOnScreen() == 0) {
-                    //     it = figures.erase(it); // удаление и обновление итератора
-                    // } else {
-                    //     ++it; // переход к следующему элементу
-                    // }
+
+                    if (it->getLenOnScreen() == 0) {
+                        it = line.erase(it); // удаление и обновление итератора
+                    } else {
+                        ++it; // переход к следующему элементу
+                    }
+                }
+            }
+        }
+
+        // Обновляем взрывы
+        for (auto &[time_point, explosion] : explosions) {
+            if ((time - time_point) % explosion_interval == 0) { // Обновляем только каждые 500 мс
+                for (auto it = explosion.begin(); it != explosion.end();) {
+                    it->clearLast();
+                    it->move();
+                    if (it->isComplete()) {
+                        it->clearLast();
+                        it = explosion.erase(it);
+                    } else {
+                        ++it;
+                    }
                 }
             }
         }
@@ -107,9 +101,8 @@ void AppManager::run() {
         // создаем новые линии на основании таймеров
         for (auto &[key, count]: counters) {
             if (count == 0) {
-                time_figures[key].emplace_back(std::make_shared<Line>(line_len, term_height, epilepsia, chance));
-                auto &line = dynamic_cast<Line &>(*time_figures[key].back());  // надо достать ссылку на объект Line
-                line.setStartXY(2 + std::rand() % (term_width - 2), 1);
+                lines[key].emplace_back(line_len, term_height, epilepsia, chance);
+                lines[key].back().setStartXY(2 + std::rand() % (term_width - 2), 1);
 
                 count = time_point_max; // секунда кончилась, начинаем новую
             }
