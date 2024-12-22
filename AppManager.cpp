@@ -87,11 +87,12 @@ void AppManager::run() {
             if ((time - time_point) % explosion_interval == 0) { // Обновляем только каждые 500 мс
                 for (auto it = explosion.begin(); it != explosion.end();) {
                     it->clearLast();
-                    it->move();
-                    if (it->isComplete()) {
-                        it->clearLast();
+
+                    // даляем взрыв, если он завершён
+                    if (it->readyToErase()) {
                         it = explosion.erase(it);
                     } else {
+                        it->move(); // Обновляем взрыв
                         ++it;
                     }
                 }

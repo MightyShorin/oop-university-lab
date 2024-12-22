@@ -9,10 +9,15 @@
 #include "Symbol.h"
 
 Explosion::Explosion(size_t x, size_t y, size_t min_radius, size_t max_radius, size_t term_width, size_t term_height)
-    : center_x(x), center_y(y), max_radius(min_radius + std::rand() % (max_radius - min_radius + 1)), is_complete(false), radius(0), term_width(term_width), term_height(term_height) {}
+    : center_x(x), center_y(y), max_radius(min_radius + std::rand() % (max_radius - min_radius + 1)), is_complete(false), ready_to_erase(false), radius(0), term_width(term_width), term_height(term_height) {}
 
 void Explosion::move() {
-   if (is_complete) return;
+    if (ready_to_erase) return; // Если объект помечен для удаления, ничего не делаем
+
+    if (is_complete) {
+        ready_to_erase = true; // Переходим в состояние ожидания удаления
+        return;
+    }
 
     radius++;
 
@@ -31,10 +36,6 @@ void Explosion::move() {
             symbol.draw(draw_x, draw_y);
         }
     }
-
-    // if (radius > 1) {
-    //     clearLast(); // Очищаем предыдущую фазу
-    // }
 
     std::cout.flush();
 

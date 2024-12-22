@@ -12,6 +12,7 @@ class Explosion : public Figure {
 public:
     Explosion(size_t x, size_t y, size_t min_radius, size_t max_radius, size_t term_width, size_t term_height);
     bool isComplete() const { return is_complete; }
+    bool readyToErase() const { return ready_to_erase; }
     void move() override;
     void clearLast() override;
 
@@ -23,6 +24,7 @@ private:
     size_t term_height;
 
     bool is_complete;
+    bool ready_to_erase;
     size_t complete_timer;
     size_t radius;
 
