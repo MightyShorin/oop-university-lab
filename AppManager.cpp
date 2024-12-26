@@ -69,7 +69,6 @@ void AppManager::run() {
                         size_t x = it->getCurrentX();
                         size_t y = it->getCurrentY();
                         explosions[time_point].emplace_back(x, y, min_radius, max_radius, term_width, term_height); // нужны ли таймпоиниты взрыву?
-                        // explosions[time_point].back().move();
                         it->shorten();
                     }
 
@@ -102,7 +101,7 @@ void AppManager::run() {
         // создаем новые линии на основании таймеров
         for (auto &[key, count]: counters) {
             if (count == 0) {
-                lines[key].emplace_back(line_len, term_height, epilepsia, chance);
+                lines[key].emplace_back(line_len, term_height, epilepsia);
                 lines[key].back().setStartXY(2 + std::rand() % (term_width - 2), 1);
 
                 count = time_point_max; // секунда кончилась, начинаем новую

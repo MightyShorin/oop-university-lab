@@ -8,8 +8,8 @@
 #include <thread>
 #include <chrono>
 
-Line::Line(size_t length, size_t terminal_height, bool epilepsia, size_t chance)
-    : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height), chance(chance),
+Line::Line(size_t length, size_t terminal_height, bool epilepsia)
+    : len(length), len_on_screen(0), bool_counter(false), terminal_height(terminal_height),
       color(ColorManager::getRandomColor(epilepsia)) {
     current_coordinates = Point(0, 0); // второй конструктор для дефолта внутри point
 }
@@ -61,7 +61,6 @@ void Line::move() {
         current_coordinates.setY(current_coordinates.getY() + 1); // Увеличиваем координату y (движение вниз)
         len_on_screen++;
 
-        // надо добавить метод, который удалит лишний символ при взрыве !!!!
 
         if (len_on_screen <= len) {
             std::cout.flush();

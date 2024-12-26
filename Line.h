@@ -13,7 +13,7 @@
 
 class Line : public Figure {
 public:
-    Line(size_t length, size_t terminal_height, bool epilepsia, size_t chance);
+    Line(size_t length, size_t terminal_height, bool epilepsia);
     ~Line();  // Деструктор
     void setStartXY(size_t x, size_t y);
     void shorten();
@@ -29,7 +29,6 @@ private:
     size_t len_on_screen;
     size_t terminal_height;  // Переменная для хранения высоты терминала
     bool bool_counter;
-    size_t chance;
     std::string color; // генерируется в конструкторе
 
     std::vector<Symbol> symbols; // Контейнер для хранения символов с координатами
