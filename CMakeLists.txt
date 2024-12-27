@@ -24,4 +24,7 @@ add_executable(LAB1_MAIN main.cpp
         Figure.h
         Explosion.cpp
         Explosion.h
+        List.h
+        LinkedList.h
+        ArrayList.h
 )
