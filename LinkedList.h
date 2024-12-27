@@ -80,6 +80,15 @@ public:
     size_t getSize() const override {
         return elemCount;
     }
+
+    T& getElementAt(size_t index) {
+        if (index >= elemCount) throw std::out_of_range("Index out of range");
+        Node* cur = firstElem;
+        for (size_t i = 0; i < index; ++i) {
+            cur = cur->nxt;
+        }
+        return cur->val;
+    }
 };
 
 

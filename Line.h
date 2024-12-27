@@ -8,6 +8,7 @@
 #include "Symbol.h"
 #include "Figure.h"
 #include "Point.h"
+#include "LinkedList.h"
 #include <iostream>
 
 
@@ -31,7 +32,7 @@ private:
     bool bool_counter;
     std::string color; // генерируется в конструкторе
 
-    std::vector<Symbol> symbols; // Контейнер для хранения символов с координатами
+    LinkedList<Symbol> symbols;
 
 
     void clearLast() override;

@@ -5,6 +5,7 @@
 #include "AppManager.h"
 #include "Terminal.h"
 #include "InputHandler.h"
+#include "LinkedList.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -31,7 +32,7 @@ void AppManager::run() {
     const size_t time_point_min = 0;
     const size_t time_point_max = 1000;
 
-    std::unordered_map<size_t, std::vector<Line>> lines;
+    std::unordered_map<size_t, LinkedList<Line>> lines;
     std::unordered_map<size_t, std::vector<Explosion>> explosions;
 
     std::unordered_map<size_t, size_t> counters; // таймеры для каждого времени
@@ -44,7 +45,7 @@ void AppManager::run() {
 
     // заполняем unordered_map
     for (const auto &key: unique_keys) {
-        lines[key] = {}; // пустые вектора для каждого времени
+        lines[key] = LinkedList<Line>(); // пустые вектора для каждого времени
         explosions[key] = {};
         counters[key] = key; // таймеры ставим на максимум
     }
@@ -60,22 +61,26 @@ void AppManager::run() {
             break;
         }
 
-        for (auto &[time_point, line]: lines) {
+        for (auto &[time_point, line_list]: lines) {
             if ((time - time_point) % interval == 0) {
+                size_t index = 0; // Индекс для ручной итерации
                 // движение линий из каждого вектора в нужное время (интервал в разное время)
-                for (auto it = line.begin(); it != line.end();) {
-                    it->move();
+                while (index < line_list.getSize()) {
+                    Line& currentLine = line_list.getElementAt(index);  // доп метод для получения элемента по индексу
+
+                    currentLine.move();
+
                     if (std::rand() % 1000 < chance) {
-                        size_t x = it->getCurrentX();
-                        size_t y = it->getCurrentY();
-                        explosions[time_point].emplace_back(x, y, min_radius, max_radius, term_width, term_height); // нужны ли таймпоиниты взрыву?
-                        it->shorten();
+                        size_t x = currentLine.getCurrentX();
+                        size_t y = currentLine.getCurrentY();
+                        explosions[time_point].emplace_back(x, y, min_radius, max_radius, term_width, term_height);
+                        currentLine.shorten();
                     }
 
-                    if (it->getLenOnScreen() == 0) {
-                        it = line.erase(it); // удаление и обновление итератора
+                    if (currentLine.getLenOnScreen() == 0) {
+                        line_list.removeFromPosition(index); // Удаляем и не увеличиваем индекс
                     } else {
-                        ++it; // переход к следующему элементу
+                        ++index; // Переходим к следующему элементу
                     }
                 }
             }
@@ -101,8 +106,11 @@ void AppManager::run() {
         // создаем новые линии на основании таймеров
         for (auto &[key, count]: counters) {
             if (count == 0) {
-                lines[key].emplace_back(line_len, term_height, epilepsia);
-                lines[key].back().setStartXY(2 + std::rand() % (term_width - 2), 1);
+                Line new_line(line_len, term_height, epilepsia);
+                new_line.setStartXY(2 + std::rand() % (term_width - 2), 1);
+                lines[key].addToEnd(new_line);
+                // lines[key].emplace_back(line_len, term_height, epilepsia);
+                // lines[key].back().setStartXY(2 + std::rand() % (term_width - 2), 1);
 
                 count = time_point_max; // секунда кончилась, начинаем новую
             }

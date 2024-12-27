@@ -24,8 +24,8 @@ size_t Line::getLenOnScreen() const {
 }
 
 void Line::shorten() {
-    if (len_on_screen > 0 && !symbols.empty()) {
-        symbols.pop_back(); // Удаляем символ из контейнера
+    if (len_on_screen > 0 && symbols.getSize() > 0) {
+        symbols.removeFromPosition(symbols.getSize() - 1); // Удаляем последний символ
         len_on_screen--; // Уменьшаем длину линии
         len--;
     }
@@ -56,7 +56,7 @@ void Line::move() {
             bool_counter = true;
         }
 
-        symbols.emplace_back(symbol); // добавим символ с координатами в контейнер
+        symbols.addToEnd(symbol); // добавим символ с координатами в контейнер
 
         current_coordinates.setY(current_coordinates.getY() + 1); // Увеличиваем координату y (движение вниз)
         len_on_screen++;
@@ -78,13 +78,13 @@ void Line::move() {
 
 // конструктор символа !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 void Line::clearLast() {
-    if (!symbols.empty()) {
-        const Symbol &last_symbol = symbols.front(); // получаем самый старый символ по ссылке
+    if (symbols.getSize() > 0) {
+        const Symbol &last_symbol = symbols.getElementAt(0); // получаем самый старый символ по ссылке
         size_t x = last_symbol.getX();
         size_t y = last_symbol.getY();
 
         std::cout << "\033[" << y << ";" << x << "H "; // очищаем символ на экране
-        symbols.erase(symbols.begin()); // освобождаем память
+        symbols.removeFromPosition(0); // освобождаем память
         len_on_screen--;
     }
 }
